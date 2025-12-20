@@ -1,0 +1,12 @@
+# build artifacts
+snake
+*.o
+*.out
+*.exe
+
+# macOS
+.DS_Store
+
+# editors
+.vscode/
+.idea/
