@@ -1,4 +1,5 @@
 #include "game.h"
+#include "snake.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -45,7 +46,7 @@ int game_init(Game *g, int grid_w,int grid_h, int cell_px){
         return 3;
     }
 
-    
+
     if (grid_init(&g->grid, grid_w,grid_h) != 0){
         fprintf(stderr,"grid_failed");
         SDL_DestroyRenderer(g->ren);
@@ -67,6 +68,25 @@ void game_free(Game *g){
     g->ren = NULL;
     g->win = NULL;
     SDL_Quit();
+}
+
+static void grid_set_wall(Grid *grid){
+    int w = grid->width;
+    int h = grid->height;
+    for (int x = 0; x < w; x++){
+        grid_set(grid,x,0,TILE_WALL);
+        grid_set(grid,x, h - 1, TILE_WALL);
+    }
+    for (int y = 0; y < grid->height; y++){
+        grid_set(grid,0,y,TILE_WALL);
+        grid_set(grid,w-1,y,TILE_WALL);
+    }
+}
+
+void game_build_grid(Game *g, const Snake *s){
+    grid_clear(&g->grid, TILE_EMPTY);
+    grid_set_wall(&g->grid);
+    snake_write_to_grid(s, &g->grid);
 }
 
 void game_render(Game *g) {
