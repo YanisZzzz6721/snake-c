@@ -1,49 +1,40 @@
-#include <stdio.h>
+#include "game.h"
 #include "SDL.h"
+#include <stdio.h>
 
 int main(void) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fprintf(stderr, "SDL_Init failed: %s\n", SDL_GetError());
+    Game game;
+    if (game_init(&game, 30, 20, 28) != 0) {
+        fprintf(stderr, "Failed to initialize game\n");
         return 1;
     }
 
-    SDL_Window *win = SDL_CreateWindow(
-        "Snake (SDL2)",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        800, 600,
-        SDL_WINDOW_SHOWN
-    );
+    const int target_fps = 60;
+    const int frame_delay = 1000 / target_fps;
 
-    if (!win) {
-        fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
-    if (!ren) {
-        fprintf(stderr, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
-        SDL_DestroyWindow(win);
-        SDL_Quit();
-        return 1;
-    }
-
-    int running = 1;
-    while (running) {
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) running = 0;
+    //Boucle de jeu
+    while (game.running) {
+        Uint32 frame_start = SDL_GetTicks();
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                game.running = false;
+            }
+            if (event.type == SDL_KEYDOWN) {
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    game.running = false;
+                }
+            }
         }
+        //Update des frame (a faire plutard)
+        //Rendu
+        game_render(&game);
 
-        SDL_RenderClear(ren);
-        SDL_RenderPresent(ren);
-
-        SDL_Delay(16); // ~60 FPS
+        Uint32 frame_time = SDL_GetTicks() - frame_start;
+        if (frame_time < frame_delay) {
+            SDL_Delay(frame_delay - frame_time);
+        }
     }
-
-    SDL_DestroyRenderer(ren);
-    SDL_DestroyWindow(win);
-    SDL_Quit();
+    game_free(&game);
     return 0;
 }
