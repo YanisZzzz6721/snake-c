@@ -20,9 +20,9 @@ int main(void) {
     const int target_fps = 60;
     const int frame_delay = 1000 / target_fps;
 
+    
     Uint32 last_move = SDL_GetTicks();
-    Uint32 move_delay = 150; // ms (plus petit = plus rapide)
-    //Boucle de jeu
+    const Uint32 move_delay = 150;
     while (game.running) {
         Uint32 frame_start = SDL_GetTicks();
         SDL_Event event;
@@ -38,11 +38,13 @@ int main(void) {
         }
         Uint32 now = SDL_GetTicks();
         if (now - last_move >= move_delay) {
-        last_move = now;
-        //calculer new_x, new_y à partir de la direction
-        //  push_front(new_x,new_y)
-        //pop_back() (si pas de nourriture)
-}
+            last_move = now;
+            int new_x = snake.head->x + 1;
+            int new_y = snake.head->y;
+
+            snake_push_front(&snake, new_x, new_y);
+            snake_pop_back(&snake);
+        }
 
         game_build_grid(&game, &snake);
         game_render(&game);

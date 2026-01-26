@@ -57,6 +57,7 @@ int snake_init(Snake *s, int start_x,int start_y,int initial_lenght){
         s->tail = seg;
         s->lenght++;
     }
+    s->dir = DIR_RIGHT;
     return 0;
 }
 

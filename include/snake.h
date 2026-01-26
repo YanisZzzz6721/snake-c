@@ -9,11 +9,21 @@ typedef struct Segment{
     struct Segment *next;
 }Segment;
 
+typedef enum{
+    DIR_UP,
+    DIR_DOWN,
+    DIR_LEFT,
+    DIR_RIGHT,
+}Directions;
+
 typedef struct Snake{
     Segment *head;
     Segment *tail;
     int lenght;
+    Directions dir;
 }Snake;
+
+
 
 int snake_init(Snake *s, int start_x,int start_y,int initial_lenght);
 
