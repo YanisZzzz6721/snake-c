@@ -5,17 +5,21 @@
 static Segment *segment_new(int x,int y){
     Segment *seg = (Segment*)malloc(sizeof(Segment));
     if(!seg){
-        perror("Erreur d'allocation mémoire");
+        perror("Segment new");
         return NULL;
     }
-    seg->x = x; seg->y = y;
+    seg->x = x; 
+    seg->y = y;
     seg->next = NULL;
     return seg;
 }
 
 void snake_free(Snake *s){
-    if(!s) return;
-    Segment *cur = s->head;
+    if(!s){
+        fprintf(stderr,"Snake is already free");
+        return;
+    }
+    Segment *cur = s->head; // Head 
     while (cur != NULL){
         Segment *next = cur->next;
         free(cur);
@@ -31,25 +35,26 @@ int snake_init(Snake *s, int start_x,int start_y,int initial_lenght){
         return -1;
     }
     if (initial_lenght <= 0){
-        perror("Erreur | lenght initiale trop court");
+        fprintf(stderr,"Erreur | taille initiale trop court");
         return -1;
     }
-    s->head = s->tail = NULL;
+    s->head = NULL; 
+    s->tail = NULL;
     s->lenght = 0;
+    
+    //Instanciation de nwhead de taille 1; head -> tail et tail -> head
     Segment *nwhead = segment_new(start_x,start_y);
-    if (!nwhead){
-        fprintf(stderr,"Erreur d'allocation");
-        return -2;
-    }
     s->head = nwhead;
     s->tail = nwhead;
     s->lenght = 1;
+    
+
     Segment *cur = nwhead;
     for (int i = 1; i < initial_lenght; i++){
         Segment *seg = segment_new(start_x-i,start_y);
         if(!seg){
             fprintf(stderr,"Erreur d'allocation mémoire");
-            free(s);
+            snake_free(s);
             return -3;
         }
         cur->next = seg;
@@ -60,6 +65,7 @@ int snake_init(Snake *s, int start_x,int start_y,int initial_lenght){
     s->dir = DIR_RIGHT;
     return 0;
 }
+
 
 
 int snake_push_front(Snake *s,int x,int y){
@@ -103,6 +109,8 @@ void snake_pop_back(Snake *s){
     cur->next = NULL;
     s->lenght--;
 }
+
+
 
 void snake_write_to_grid(const Snake *s, Grid *g){
     if (!s || !g || !g->cells) return;

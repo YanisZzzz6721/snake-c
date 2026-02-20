@@ -1,8 +1,11 @@
 CC := clang
-CFLAGS := -Wall -Wextra -Wpedantic -O2 -Iinclude
+CFLAGS := -Wall -Wextra -Wpedantic -O2 -g -Iinclude
 SDL_CFLAGS := $(shell pkg-config --cflags sdl2)
 SDL_LIBS := $(shell pkg-config --libs sdl2)
 LDFLAGS := $(SDL_LIBS)
+
+
+
 
 SRC := $(wildcard src/*.c)
 OBJ := $(SRC:.c=.o)

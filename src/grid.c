@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+
 int grid_init(Grid *g, int width,int height){
     if (!g || width <= 0 || height <= 0){
-        fprintf(stderr,"Erreur");
+        fprintf(stderr,"Erreur données pas correct");
         return -1;
     }
     g->height = height;
@@ -12,6 +14,7 @@ int grid_init(Grid *g, int width,int height){
     g->cells = (Tile*)malloc((size_t)width * (size_t)height * sizeof(Tile));
     if (!g->cells){
         fprintf(stderr,"Erreur malloc");
+        exit(EXIT_FAILURE);
         return -1;
     }
     grid_clear(g, TILE_EMPTY);
@@ -21,7 +24,7 @@ int grid_init(Grid *g, int width,int height){
 void grid_free(Grid *g){
     if (!g){
         fprintf(stderr,"Erreur d'allocation méméoire");
-        return;
+        exit(EXIT_FAILURE);
     }
     free(g->cells);
     g->cells = NULL;

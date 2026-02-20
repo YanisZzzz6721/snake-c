@@ -15,9 +15,11 @@ typedef struct Game{
 
     Grid grid;
     bool running;
+
 }Game;
 
 int game_init(Game *g,int grid_w, int grid_h, int cell_px);
+//Instanciation de la grille et des cellules
 
 void game_free(Game *g);
 
